@@ -102,6 +102,12 @@ function love.draw()
 end
 
 function love.keypressed(key, scancode, isrepeat)
+  local allowed_keys = {"up", "down", "left", "right"}
+
+  if not contains(allowed_keys, key) then
+    return
+  end
+
   if not drawed or not updated then
     return
   end
@@ -120,4 +126,14 @@ function love.keypressed(key, scancode, isrepeat)
   updated = false
 
   snake.direction = key
+end
+
+function contains(table, element)
+  for _, value in pairs(table) do
+    if value == element then
+      return true
+    end
+  end
+
+  return false
 end
