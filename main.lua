@@ -4,7 +4,10 @@ function love.load()
   snakeSize = 43
   scoreBoardHeight = 70
   fullWidth = snakeSize * 10
-  fullHeight = snakeSize * 18 + scoreBoardHeight
+  fullHeight = snakeSize * 17 + scoreBoardHeight
+  if maxScore == nil then
+    maxScore = 0
+  end
 
   love.window.setTitle("Sn4keGame")
   love.window.setMode(
@@ -14,11 +17,12 @@ function love.load()
   )
 
   snake = {}
-  snake.pos = { 9, 17 }
+  snake.pos = { 9, 16 }
   snake.parts = {}
   table.insert(snake.parts, snake.pos)
 
   snake.direction = ""
+  snake.lastKeyDirection = ""
   snake.size = 1
 
   food = {}
@@ -28,9 +32,6 @@ function love.load()
 
   speed = 0.3
   count = 0
-
-  drawed = true
-  updated = true
 
   red = 115/255
   green = 27/255
@@ -54,6 +55,8 @@ function love.update(dt)
   count = count + 1.2 * dt
 
   if count > speed then
+    snake.direction = snake.lastKeyDirection
+
     if nextScore > 10 then
       nextScore = nextScore - 3
     else
@@ -89,11 +92,15 @@ function love.update(dt)
 
     for k, v in ipairs(snake.parts) do
       if k ~= #snake.parts then
-        if v[1] == snake.pos[1] and v[2] == snake.pos[2] then love.load() end
+        if v[1] == snake.pos[1] and v[2] == snake.pos[2] then
+          if maxScore < currentScore then
+            maxScore = currentScore
+          end
+
+          love.load()
+        end
       end
     end
-
-    updated = true
   end
 end
 
@@ -111,15 +118,24 @@ function love.draw()
     200,
     "right")
 
-  local font = love.graphics.newFont(40)
+  local scoreboardSize = love.graphics.newFont(40)
 
   love.graphics.printf(
     {{ 0/255, 0/255, 0/255 }, currentScore},
-    font,
+    scoreboardSize,
     fullWidth-100,
     scoreBoardHeight / 2 - 25,
     100,
     "right")
+
+    local scoreboardSize = love.graphics.newFont(14)
+    love.graphics.printf(
+      {{ 0/255, 0/255, 0/255 }, "Recorde: "..maxScore},
+      scoreboardSize,
+      fullWidth-100,
+      scoreBoardHeight / 2 + 15,
+      100,
+      "right")
 
   love.graphics.setColor(255,0,0,1)
   love.graphics.rectangle(
@@ -146,18 +162,12 @@ function love.draw()
 
     firstColor = false
   end
-
-  drawed = true
 end
 
 function love.keypressed(key, scancode, isrepeat)
   local allowed_keys = {"up", "down", "left", "right"}
 
   if not contains(allowed_keys, key) then
-    return
-  end
-
-  if not drawed or not updated then
     return
   end
 
@@ -171,10 +181,7 @@ function love.keypressed(key, scancode, isrepeat)
     return
   end
 
-  drawed = false
-  updated = false
-
-  snake.direction = key
+  snake.lastKeyDirection = key
 end
 
 function contains(table, element)
