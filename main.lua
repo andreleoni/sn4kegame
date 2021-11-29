@@ -158,7 +158,7 @@ function love.draw()
       v[1] * snakeSize,
       v[2] * snakeSize + scoreBoardHeight,
       snakeSize - 1,
-      snakeSize -1 )
+      snakeSize -1)
 
     firstColor = false
   end
