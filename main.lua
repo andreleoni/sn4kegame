@@ -167,7 +167,7 @@ function love.keypressed(key, scancode, isrepeat)
     return
   elseif snake.direction == "left" and key == "right" then
     return
-  elseif snake.direction == "left" and key == "right" then
+  elseif snake.direction == "right" and key == "left" then
     return
   end
 
