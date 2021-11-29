@@ -2,12 +2,19 @@
 
 function love.load()
   snakeSize = 43
+  scoreBoardHeight = 70
+  fullWidth = snakeSize * 10
+  fullHeight = snakeSize * 18 + scoreBoardHeight
 
   love.window.setTitle("Sn4keGame")
-  love.window.setMode(snakeSize * 10, snakeSize * 18, { resizable=false, vsync = true })
+  love.window.setMode(
+    fullWidth,
+    fullHeight,
+    { resizable = false, vsync = true }
+  )
 
   snake = {}
-  snake.pos = {9,17}
+  snake.pos = { 9, 17 }
   snake.parts = {}
   table.insert(snake.parts, snake.pos)
 
@@ -16,14 +23,24 @@ function love.load()
 
   food = {}
   repeat
-    food.pos = {math.random(0,10), math.random(0,16)}
+    food.pos = { math.random(0,10), math.random(0,16) }
   until food.pos[1] ~= 10 and food.pos[2] ~= 7
 
-  speed = 0.30
+  speed = 0.3
   count = 0
 
   drawed = true
   updated = true
+
+  red = 115/255
+  green = 27/255
+  blue = 135/255
+  alpha = 50/100
+
+  love.graphics.setBackgroundColor(red, green, blue, alpha)
+
+  currentScore = 0
+  nextScore = 100
 end
 
 function isEmpty(pos)
@@ -37,6 +54,12 @@ function love.update(dt)
   count = count + 1.2 * dt
 
   if count > speed then
+    if nextScore > 10 then
+      nextScore = nextScore - 3
+    else
+      nextScore = 10
+    end
+
     count = 0
 
     if snake.direction == "up" then
@@ -57,6 +80,9 @@ function love.update(dt)
       until isEmpty(food.pos)
 
       speed = speed - 0.005 < 0.08 and 0.08 or speed - 0.005
+
+      currentScore = currentScore + nextScore
+      nextScore = 100
     else
       table.remove(snake.parts, 1)
     end
@@ -72,11 +98,34 @@ function love.update(dt)
 end
 
 function love.draw()
+  love.graphics.setColor(255, 255, 255, 1)
+  love.graphics.rectangle("fill", 0, 0, fullWidth, scoreBoardHeight)
+
+  local titleFont = love.graphics.newFont(30)
+
+  love.graphics.printf(
+    {{ 0/255, 0/255, 0/255 }, "Sn4keGame"},
+    titleFont,
+    5,
+    scoreBoardHeight / 2 - 20,
+    200,
+    "right")
+
+  local font = love.graphics.newFont(40)
+
+  love.graphics.printf(
+    {{ 0/255, 0/255, 0/255 }, currentScore},
+    font,
+    fullWidth-100,
+    scoreBoardHeight / 2 - 25,
+    100,
+    "right")
+
   love.graphics.setColor(255,0,0,1)
   love.graphics.rectangle(
     "fill",
     food.pos[1] * snakeSize,
-    food.pos[2] * snakeSize,
+    food.pos[2] * snakeSize + scoreBoardHeight,
     snakeSize,
     snakeSize,
     snakeSize)
@@ -91,9 +140,9 @@ function love.draw()
     love.graphics.rectangle(
       "fill",
       v[1] * snakeSize,
-      v[2] * snakeSize,
-      snakeSize,
-      snakeSize)
+      v[2] * snakeSize + scoreBoardHeight,
+      snakeSize - 1,
+      snakeSize -1 )
 
     firstColor = false
   end
