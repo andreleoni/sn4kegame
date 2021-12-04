@@ -149,6 +149,7 @@ function love.draw()
 
   for k,v in ipairs(snake.parts) do
     if k == #snake.parts then
+      -- The snake head
       local spritRight = snakeSize * 4
       local spritDown = 0
 
@@ -175,23 +176,42 @@ function love.draw()
         curSnakeSprite,
         v[1] * snakeSize,
         v[2] * snakeSize + scoreBoardHeight)
-    else
+    elseif k == 1 then
+      -- The snake tail
 
-      -- Fix logic related with the sprite of snake
-      local spritRight = snakeSize * 3
-      local spritDown = 0
+      local spriteTailPosition = snakeSpriteTails("up")
+      local previousSnakePart = snake.parts[k + 1]
 
-      if k == 1 then
-        if v[1] > v[2] then
-          spritRight = snakeSize
-        elseif v[1] == v[2] then
-          spritRight = snakeSize * 2
-        end
+      if v[2] == previousSnakePart[2] and v[1] < previousSnakePart[1] then
+        spriteTailPosition = snakeSpriteTails("right")
+      elseif v[2] == previousSnakePart[2] and v[1] > previousSnakePart[1] then
+        spriteTailPosition = snakeSpriteTails("left")
+      elseif v[1] == previousSnakePart[1] and v[2] < previousSnakePart[2] then
+        spriteTailPosition = snakeSpriteTails("down")
       end
 
       curSnakeSprite = love.graphics.newQuad(
-        spritRight,
-        spritDown,
+        spriteTailPosition[1],
+        spriteTailPosition[2],
+        snakeSize,
+        snakeSize,
+        snakeSprite:getDimensions())
+
+      love.graphics.draw(
+        snakeSprite,
+        curSnakeSprite,
+        v[1] * snakeSize,
+        v[2] * snakeSize + scoreBoardHeight)
+
+    else
+      -- the snake body
+      local previousSnakePart = snake.parts[k + 1]
+
+      print(v[1], previousSnakePart[1], "|", v[2], previousSnakePart[2])
+
+      curSnakeSprite = love.graphics.newQuad(
+        0,
+        0,
         snakeSize,
         snakeSize,
         snakeSprite:getDimensions())
@@ -240,4 +260,21 @@ function sortNewFruit()
 
   getFruidFromIndex = math.random(1, #fruits)
   currentFoodSprite = love.graphics.newImage("src/images/"..fruits[getFruidFromIndex]..".png")
+end
+
+function snakeSpriteTails(tailDirection)
+  local x = 0
+  local y = 0
+
+  if tailDirection == "right" then
+    x = snakeSize
+  elseif tailDirection == "left" then
+    y = snakeSize
+  elseif tailDirection == "down" then
+    x = snakeSize
+    y = snakeSize
+  end
+
+
+  return { x, y }
 end
