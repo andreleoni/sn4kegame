@@ -164,7 +164,7 @@ function love.draw()
         spritDown = snakeSize
       end
 
-      curSnakeSprite = love.graphics.newQuad(
+      local curSnakeSprite = love.graphics.newQuad(
         spritRight,
         spritDown,
         snakeSize,
@@ -190,7 +190,7 @@ function love.draw()
         spriteTailPosition = snakeSpriteTails("down")
       end
 
-      curSnakeSprite = love.graphics.newQuad(
+      local curSnakeSprite = love.graphics.newQuad(
         spriteTailPosition[1],
         spriteTailPosition[2],
         snakeSize,
@@ -205,13 +205,22 @@ function love.draw()
 
     else
       -- the snake body
+      local spriteBodyPosition = snakeSpriteBody("up", "down")
       local previousSnakePart = snake.parts[k + 1]
+      local nextSnakePart = snake.parts[k - 1]
 
-      print(v[1], previousSnakePart[1], "|", v[2], previousSnakePart[2])
+      print(nextSnakePart[1], v[1], previousSnakePart[1], "|",
+            nextSnakePart[2], v[2], previousSnakePart[2])
 
-      curSnakeSprite = love.graphics.newQuad(
-        0,
-        0,
+      if v[2] == previousSnakePart[2] and v[2] == nextSnakePart[2] then
+        spriteBodyPosition = snakeSpriteBody("left", "right")
+      elseif v[1] == previousSnakePart[1] and v[1] == nextSnakePart[1] then
+        spriteBodyPosition = snakeSpriteBody("up", "down")
+      end
+
+      local curSnakeSprite = love.graphics.newQuad(
+        spriteBodyPosition[1],
+        spriteBodyPosition[2],
         snakeSize,
         snakeSize,
         snakeSprite:getDimensions())
@@ -275,6 +284,36 @@ function snakeSpriteTails(tailDirection)
     y = snakeSize
   end
 
+
+  return { x, y }
+end
+
+function snakeSpriteBody(origin, destination)
+  local x = 0
+  local y = 0
+
+  if (origin == "up" and destination == "down") or (origin == "down" and destination == "up") then
+    x = snakeSize * 2
+
+  elseif (origin == "left" and destination == "right") or (origin == "right" and destination == "left") then
+    x = snakeSize * 2
+    y = snakeSize
+
+  elseif (origin == "up" and destination == "right") or (origin == "right" and destination == "up") then
+
+    x = snakeSize * 5
+
+  elseif (origin == "left" and destination == "down") or (origin == "down" and destination == "left") then
+    x = snakeSize * 6
+
+  elseif (origin == "right" and destination == "down") or (origin == "down" and destination == "right") then
+    x = snakeSize * 5
+    y = snakeSize
+
+  elseif (origin == "up" and destination == "left") or (origin == "left" and destination == "up") then
+    x = snakeSize * 6
+    y = snakeSize
+  end
 
   return { x, y }
 end
