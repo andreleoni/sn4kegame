@@ -33,17 +33,13 @@ function love.load()
   speed = 0.3
   count = 0
 
-  red = 115/255
-  green = 27/255
-  blue = 135/255
-  alpha = 50/100
-
-  -- love.graphics.setBackgroundColor(red, green, blue, alpha)
-
   currentScore = 0
   nextScore = 100
 
+  snakeSprite = love.graphics.newImage("src/images/snake.png")
   background = love.graphics.newImage("src/images/grass.png")
+
+  sortNewFruit()
 end
 
 function isEmpty(pos)
@@ -86,6 +82,7 @@ function love.update(dt)
 
       speed = speed - 0.005 < 0.08 and 0.08 or speed - 0.005
 
+      sortNewFruit()
       currentScore = currentScore + nextScore
       nextScore = 100
     else
@@ -112,8 +109,6 @@ function love.draw()
         love.graphics.draw(background, i * background:getWidth(), j * background:getHeight())
     end
   end
-
-
 
   love.graphics.setColor(255, 255, 255, 1)
   love.graphics.rectangle("fill", 0, 0, fullWidth, scoreBoardHeight)
@@ -147,14 +142,10 @@ function love.draw()
       100,
       "right")
 
-  love.graphics.setColor(255,0,0,1)
-  love.graphics.rectangle(
-    "fill",
-    food.pos[1] * snakeSize,
-    food.pos[2] * snakeSize + scoreBoardHeight,
-    snakeSize,
-    snakeSize,
-    snakeSize)
+  love.graphics.draw(
+    currentFoodSprite,
+    food.pos[1] * snakeSize + 5,
+    food.pos[2] * snakeSize + scoreBoardHeight + 5)
 
   for k,v in ipairs(snake.parts) do
     if k == #snake.parts then
@@ -172,6 +163,10 @@ function love.draw()
 
     firstColor = false
   end
+
+  -- Fix snake sprite
+  -- curSnakeSprite = love.graphics.newQuad(0, 0, 37, 37, snakeSprite:getDimensions())
+  -- love.graphics.draw(snakeSprite, curSnakeSprite)
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -202,4 +197,11 @@ function contains(table, element)
   end
 
   return false
+end
+
+function sortNewFruit()
+  fruits = {"apple", "burger", "carrot", "cherry", "egg", "fries", "ham", "pizza", "strawberry", "sushi", "watermelon"}
+
+  getFruidFromIndex = math.random(1, #fruits)
+  currentFoodSprite = love.graphics.newImage("src/images/"..fruits[getFruidFromIndex]..".png")
 end
