@@ -170,17 +170,37 @@ function love.draw()
         snakeSize,
         snakeSprite:getDimensions())
 
-      love.graphics.draw(snakeSprite, curSnakeSprite, v[1] * snakeSize, v[2] * snakeSize + scoreBoardHeight)
+      love.graphics.draw(
+        snakeSprite,
+        curSnakeSprite,
+        v[1] * snakeSize,
+        v[2] * snakeSize + scoreBoardHeight)
     else
-      love.graphics.setColor(255,255,255,0.7)
 
-      love.graphics.rectangle(
-      "fill",
-      v[1] * snakeSize,
-      v[2] * snakeSize + scoreBoardHeight,
-      snakeSize - 1,
-      snakeSize -1)
-      love.graphics.setColor(255,255,255,1)
+      -- Fix logic related with the sprite of snake
+      local spritRight = snakeSize * 3
+      local spritDown = 0
+
+      if k == 1 then
+        if v[1] > v[2] then
+          spritRight = snakeSize
+        elseif v[1] == v[2] then
+          spritRight = snakeSize * 2
+        end
+      end
+
+      curSnakeSprite = love.graphics.newQuad(
+        spritRight,
+        spritDown,
+        snakeSize,
+        snakeSize,
+        snakeSprite:getDimensions())
+
+      love.graphics.draw(
+        snakeSprite,
+        curSnakeSprite,
+        v[1] * snakeSize,
+        v[2] * snakeSize + scoreBoardHeight)
     end
   end
 end
