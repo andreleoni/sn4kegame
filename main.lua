@@ -38,10 +38,12 @@ function love.load()
   blue = 135/255
   alpha = 50/100
 
-  love.graphics.setBackgroundColor(red, green, blue, alpha)
+  -- love.graphics.setBackgroundColor(red, green, blue, alpha)
 
   currentScore = 0
   nextScore = 100
+
+  background = love.graphics.newImage("src/images/grass.png")
 end
 
 function isEmpty(pos)
@@ -105,6 +107,14 @@ function love.update(dt)
 end
 
 function love.draw()
+  for i = 0, love.graphics.getWidth() / background:getWidth() do
+    for j = 0, love.graphics.getHeight() / background:getHeight() do
+        love.graphics.draw(background, i * background:getWidth(), j * background:getHeight())
+    end
+  end
+
+
+
   love.graphics.setColor(255, 255, 255, 1)
   love.graphics.rectangle("fill", 0, 0, fullWidth, scoreBoardHeight)
 
