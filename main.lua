@@ -205,17 +205,66 @@ function love.draw()
 
     else
       -- the snake body
-      local spriteBodyPosition = snakeSpriteBody("up", "down")
+      local spriteBodyPosition = {0,0}
       local previousSnakePart = snake.parts[k + 1]
       local nextSnakePart = snake.parts[k - 1]
 
-      print(nextSnakePart[1], v[1], previousSnakePart[1], "|",
-            nextSnakePart[2], v[2], previousSnakePart[2])
+      -- print(nextSnakePart[1], v[1], previousSnakePart[1], "|",
+      --       nextSnakePart[2], v[2], previousSnakePart[2])
 
       if v[2] == previousSnakePart[2] and v[2] == nextSnakePart[2] then
         spriteBodyPosition = snakeSpriteBody("left", "right")
+
       elseif v[1] == previousSnakePart[1] and v[1] == nextSnakePart[1] then
         spriteBodyPosition = snakeSpriteBody("up", "down")
+
+      elseif (v[1] == previousSnakePart[1] and v[1] < nextSnakePart[1]) and
+        (v[2] == previousSnakePart[2] and v[2] < nextSnakePart[2]) then
+        spriteBodyPosition = snakeSpriteBody("down", "left")
+
+      elseif (v[2] > previousSnakePart[2] and v[1] < nextSnakePart[1]) and
+        (v[2] == nextSnakePart[2] and v[1] == previousSnakePart[1]) then
+        spriteBodyPosition = snakeSpriteBody("right", "up")
+
+      elseif (v[1] == previousSnakePart[1] and v[2] == nextSnakePart[2]) and
+        (v[1] > nextSnakePart[1] and v[2] > previousSnakePart[2]) then
+        spriteBodyPosition = snakeSpriteBody("left", "up")
+
+      elseif (v[1] == previousSnakePart[1] and v[2] < previousSnakePart[2]) and
+      (v[1] < nextSnakePart[1] and v[2] == nextSnakePart[2]) then
+
+        spriteBodyPosition = snakeSpriteBody("down", "right")
+
+      elseif (v[1] > previousSnakePart[1] and v[2] == previousSnakePart[2]) and
+        (v[1] == nextSnakePart[1] and v[2] > nextSnakePart[2]) then
+
+        spriteBodyPosition = snakeSpriteBody("up", "left")
+
+      elseif (v[1] == previousSnakePart[1] and v[2] < previousSnakePart[2]) and
+        (v[1] > nextSnakePart[1] and v[2] == nextSnakePart[2]) then
+
+        spriteBodyPosition = snakeSpriteBody("down", "left")
+
+      elseif (v[1] < previousSnakePart[1] and v[2] == previousSnakePart[2]) and
+        (v[1] == nextSnakePart[1] and v[2] > nextSnakePart[2]) then
+
+        spriteBodyPosition = snakeSpriteBody("up", "right")
+
+      elseif (v[1] < previousSnakePart[1] and v[2] == previousSnakePart[2]) and
+        (v[1] == nextSnakePart[1] and v[2] < nextSnakePart[2]) then
+
+        spriteBodyPosition = snakeSpriteBody("down", "right")
+
+      elseif (v[1] > previousSnakePart[1] and v[2] == previousSnakePart[2]) and
+        (v[1] == nextSnakePart[1] and v[2] < nextSnakePart[2]) then
+
+        spriteBodyPosition = snakeSpriteBody("down", "left")
+
+      else
+        print("not_mapped_sprite:",
+            previousSnakePart[1], v[1], nextSnakePart[1],
+            "|",
+            previousSnakePart[2], v[2], nextSnakePart[2])
       end
 
       local curSnakeSprite = love.graphics.newQuad(
