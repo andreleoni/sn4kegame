@@ -149,24 +149,40 @@ function love.draw()
 
   for k,v in ipairs(snake.parts) do
     if k == #snake.parts then
-      love.graphics.setColor(255,255,255,1)
+      local spritRight = snakeSize * 4
+      local spritDown = 0
+
+      if snake.direction == "up" then
+        spritRight = snakeSize * 3
+        spritDown = 0
+      elseif snake.direction == "down" then
+        spritRight = snakeSize * 3
+        spritDown = snakeSize
+      elseif snake.direction == "left" then
+        spritRight = snakeSize * 4
+        spritDown = snakeSize
+      end
+
+      curSnakeSprite = love.graphics.newQuad(
+        spritRight,
+        spritDown,
+        snakeSize,
+        snakeSize,
+        snakeSprite:getDimensions())
+
+      love.graphics.draw(snakeSprite, curSnakeSprite, v[1] * snakeSize, v[2] * snakeSize + scoreBoardHeight)
     else
       love.graphics.setColor(255,255,255,0.7)
-    end
 
-    love.graphics.rectangle(
+      love.graphics.rectangle(
       "fill",
       v[1] * snakeSize,
       v[2] * snakeSize + scoreBoardHeight,
       snakeSize - 1,
       snakeSize -1)
-
-    firstColor = false
+      love.graphics.setColor(255,255,255,1)
+    end
   end
-
-  -- Fix snake sprite
-  -- curSnakeSprite = love.graphics.newQuad(0, 0, 37, 37, snakeSprite:getDimensions())
-  -- love.graphics.draw(snakeSprite, curSnakeSprite)
 end
 
 function love.keypressed(key, scancode, isrepeat)
