@@ -179,15 +179,39 @@ function love.draw()
     elseif k == 1 then
       -- The snake tail
 
+
       local spriteTailPosition = snakeSpriteTails("up")
       local previousSnakePart = snake.parts[k + 1]
 
-      if v[2] == previousSnakePart[2] and v[1] < previousSnakePart[1] then
-        spriteTailPosition = snakeSpriteTails("right")
-      elseif v[2] == previousSnakePart[2] and v[1] > previousSnakePart[1] then
-        spriteTailPosition = snakeSpriteTails("left")
-      elseif v[1] == previousSnakePart[1] and v[2] < previousSnakePart[2] then
-        spriteTailPosition = snakeSpriteTails("down")
+      -- print(previousSnakePart[1], v[1], nextSnakePart[1], "|",
+      -- previousSnakePart[2], v[2], nextSnakePart[2])
+
+      if v[1] < previousSnakePart[1] and v[2] == previousSnakePart[2] then
+        if (previousSnakePart[1] - v[1]) > 1 then
+          spriteTailPosition = snakeSpriteTails("left")
+        else
+          spriteTailPosition = snakeSpriteTails("right")
+        end
+      elseif v[1] > previousSnakePart[1] and v[2] == previousSnakePart[2]  then
+        if (v[1] - previousSnakePart[1]) > 1 then
+          spriteTailPosition = snakeSpriteTails("right")
+        else
+          spriteTailPosition = snakeSpriteTails("left")
+        end
+
+        -- print(previousSnakePart[1], v[1], "|", previousSnakePart[2], v[2])
+      elseif v[2] < previousSnakePart[2] and v[1] == previousSnakePart[1] then
+        if (previousSnakePart[2] - v[2]) > 1 then
+          spriteTailPosition = snakeSpriteTails("up")
+        else
+          spriteTailPosition = snakeSpriteTails("down")
+        end
+      elseif v[2] > previousSnakePart[2] and v[1] == previousSnakePart[1] then
+        if (v[2] - previousSnakePart[2]) > 1 then
+          spriteTailPosition = snakeSpriteTails("down")
+        else
+          spriteTailPosition = snakeSpriteTails("up")
+        end
       end
 
       local curSnakeSprite = love.graphics.newQuad(
@@ -209,10 +233,23 @@ function love.draw()
       local previousSnakePart = snake.parts[k + 1]
       local nextSnakePart = snake.parts[k - 1]
 
-      -- print(nextSnakePart[1], v[1], previousSnakePart[1], "|",
-      --       nextSnakePart[2], v[2], previousSnakePart[2])
+      isCorner = v[1] == 0 or v[1] == 9 or v[2] == 0 or v[2] == 16
 
-      if v[2] == previousSnakePart[2] and v[2] == nextSnakePart[2] then
+      if isCorner and not (nextSnakePart[1] ~= nil or nextSnakePart[2] ~= nil) then
+
+
+
+        if previousSnakePart[2] == v[2] and v[2] == nextSnakePart[2] and
+           (previousSnakePart[1] > v[1] and v[1] < nextSnakePart[1] and previousSnakePart[1] < nextSnakePart[1]) then
+
+            spriteBodyPosition = snakeSpriteBody("left", "right")
+        elseif previousSnakePart[2] == v[2] and v[2] == nextSnakePart[2] and
+          (previousSnakePart[1] < v[1] and v[1] > nextSnakePart[1] and previousSnakePart[1] < nextSnakePart[1]) then
+
+            spriteBodyPosition = snakeSpriteBody("left", "right")
+        end
+
+      elseif v[2] == previousSnakePart[2] and v[2] == nextSnakePart[2] then
         spriteBodyPosition = snakeSpriteBody("left", "right")
 
       elseif v[1] == previousSnakePart[1] and v[1] == nextSnakePart[1] then
