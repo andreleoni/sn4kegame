@@ -192,6 +192,7 @@ function love.draw()
         else
           spriteTailPosition = snakeSpriteTails("right")
         end
+
       elseif v[1] > previousSnakePart[1] and v[2] == previousSnakePart[2]  then
         if (v[1] - previousSnakePart[1]) > 1 then
           spriteTailPosition = snakeSpriteTails("right")
@@ -199,13 +200,13 @@ function love.draw()
           spriteTailPosition = snakeSpriteTails("left")
         end
 
-        -- print(previousSnakePart[1], v[1], "|", previousSnakePart[2], v[2])
       elseif v[2] < previousSnakePart[2] and v[1] == previousSnakePart[1] then
         if (previousSnakePart[2] - v[2]) > 1 then
           spriteTailPosition = snakeSpriteTails("up")
         else
           spriteTailPosition = snakeSpriteTails("down")
         end
+
       elseif v[2] > previousSnakePart[2] and v[1] == previousSnakePart[1] then
         if (v[2] - previousSnakePart[2]) > 1 then
           spriteTailPosition = snakeSpriteTails("down")
@@ -233,66 +234,158 @@ function love.draw()
       local previousSnakePart = snake.parts[k + 1]
       local nextSnakePart = snake.parts[k - 1]
 
-      isCorner = v[1] == 0 or v[1] == 9 or v[2] == 0 or v[2] == 16
+      horizontalCorner = (previousSnakePart[1] == 0 and nextSnakePart[1] == 9) or
+        (previousSnakePart[1] == 9 and nextSnakePart[1] == 0)
 
-      if isCorner and not (nextSnakePart[1] ~= nil or nextSnakePart[2] ~= nil) then
+      verticalCorner = (previousSnakePart[2] == 0 and nextSnakePart[2] == 16) or
+        (previousSnakePart[2] == 16 and nextSnakePart[2] == 0)
 
+      isCorner = horizontalCorner or verticalCorner
 
+      if verticalCorner and
+        previousSnakePart[1] < v[1] and v[1] == nextSnakePart[1] and
+        previousSnakePart[2] == v[2] and v[2] < nextSnakePart[2] then
 
-        if previousSnakePart[2] == v[2] and v[2] == nextSnakePart[2] and
-           (previousSnakePart[1] > v[1] and v[1] < nextSnakePart[1] and previousSnakePart[1] < nextSnakePart[1]) then
+        spriteBodyPosition = snakeSpriteBody("up", "left")
 
-            spriteBodyPosition = snakeSpriteBody("left", "right")
-        elseif previousSnakePart[2] == v[2] and v[2] == nextSnakePart[2] and
-          (previousSnakePart[1] < v[1] and v[1] > nextSnakePart[1] and previousSnakePart[1] < nextSnakePart[1]) then
+      elseif verticalCorner and
+        previousSnakePart[1] == v[1] and v[1] > nextSnakePart[1] and
+        previousSnakePart[2] > v[2] and v[2] == nextSnakePart[2] then
 
-            spriteBodyPosition = snakeSpriteBody("left", "right")
-        end
+        spriteBodyPosition = snakeSpriteBody("up", "left")
 
-      elseif v[2] == previousSnakePart[2] and v[2] == nextSnakePart[2] then
+      elseif verticalCorner and
+        previousSnakePart[1] > v[1] and v[1] == nextSnakePart[1] and
+        previousSnakePart[2] == v[2] and v[2] > nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("down", "right")
+
+      elseif verticalCorner and
+        previousSnakePart[1] == v[1] and v[1] > nextSnakePart[1] and
+        previousSnakePart[2] < v[2] and v[2] == nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("down", "left")
+
+      elseif verticalCorner and
+        previousSnakePart[1] > v[1] and v[1] == nextSnakePart[1] and
+        previousSnakePart[2] == v[2] and v[2] < nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("up", "right")
+
+      elseif verticalCorner and
+        previousSnakePart[1] == v[1] and v[1] < nextSnakePart[1] and
+        previousSnakePart[2] < v[2] and v[2] == nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("down", "right")
+
+      elseif verticalCorner and
+        previousSnakePart[1] < v[1] and v[1] == nextSnakePart[1] and
+        previousSnakePart[2] == v[2] and v[2] > nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("down", "left")
+
+      elseif verticalCorner and
+        previousSnakePart[1] == v[1] and v[1] < nextSnakePart[1] and
+        previousSnakePart[2] > v[2] and v[2] == nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("up", "right")
+
+      elseif horizontalCorner and
+        previousSnakePart[1] == v[1] and v[1] < nextSnakePart[1] and
+        previousSnakePart[2] > v[2] and v[2] == nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("left", "down")
+
+      elseif horizontalCorner and
+        previousSnakePart[1] > v[1] and v[1] == nextSnakePart[1] and
+        previousSnakePart[2] == v[2] and v[2] > nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("left", "up")
+
+      elseif horizontalCorner and
+        previousSnakePart[1] == v[1] and v[1] > nextSnakePart[1] and
+        previousSnakePart[2] > v[2] and v[2] == nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("right", "down")
+
+      elseif horizontalCorner and
+        previousSnakePart[1] < v[1] and v[1] == nextSnakePart[1] and
+        previousSnakePart[2] == v[2] and v[2] > nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("right", "up")
+
+      elseif horizontalCorner and
+        previousSnakePart[1] == v[1] and v[1] < nextSnakePart[1] and
+        previousSnakePart[2] < v[2] and v[2] == nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("left", "up")
+
+      elseif horizontalCorner and
+        previousSnakePart[1] == v[1] and v[1] > nextSnakePart[1] and
+        previousSnakePart[2] < v[2] and v[2] == nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("right", "up")
+
+      elseif horizontalCorner and
+        previousSnakePart[1] > v[1] and v[1] == nextSnakePart[1] and
+        previousSnakePart[2] == v[2] and v[2] < nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("left", "down")
+
+      elseif horizontalCorner and
+        previousSnakePart[1] < v[1] and v[1] == nextSnakePart[1] and
+        previousSnakePart[2] == v[2] and v[2] < nextSnakePart[2] then
+
+        spriteBodyPosition = snakeSpriteBody("right", "down")
+
+      -- Not corner
+
+      elseif not isCorner and
+        v[2] == previousSnakePart[2] and v[2] == nextSnakePart[2] then
         spriteBodyPosition = snakeSpriteBody("left", "right")
 
-      elseif v[1] == previousSnakePart[1] and v[1] == nextSnakePart[1] then
+      elseif not isCorner and v[1] == previousSnakePart[1] and v[1] == nextSnakePart[1] then
         spriteBodyPosition = snakeSpriteBody("up", "down")
 
-      elseif (v[1] == previousSnakePart[1] and v[1] < nextSnakePart[1]) and
+      elseif not isCorner and (v[1] == previousSnakePart[1] and v[1] < nextSnakePart[1]) and
         (v[2] == previousSnakePart[2] and v[2] < nextSnakePart[2]) then
         spriteBodyPosition = snakeSpriteBody("down", "left")
 
-      elseif (v[2] > previousSnakePart[2] and v[1] < nextSnakePart[1]) and
+      elseif not isCorner and (v[2] > previousSnakePart[2] and v[1] < nextSnakePart[1]) and
         (v[2] == nextSnakePart[2] and v[1] == previousSnakePart[1]) then
         spriteBodyPosition = snakeSpriteBody("right", "up")
 
-      elseif (v[1] == previousSnakePart[1] and v[2] == nextSnakePart[2]) and
+      elseif not isCorner and (v[1] == previousSnakePart[1] and v[2] == nextSnakePart[2]) and
         (v[1] > nextSnakePart[1] and v[2] > previousSnakePart[2]) then
         spriteBodyPosition = snakeSpriteBody("left", "up")
 
-      elseif (v[1] == previousSnakePart[1] and v[2] < previousSnakePart[2]) and
+      elseif not isCorner and (v[1] == previousSnakePart[1] and v[2] < previousSnakePart[2]) and
       (v[1] < nextSnakePart[1] and v[2] == nextSnakePart[2]) then
 
         spriteBodyPosition = snakeSpriteBody("down", "right")
 
-      elseif (v[1] > previousSnakePart[1] and v[2] == previousSnakePart[2]) and
+      elseif not isCorner and
+        (v[1] > previousSnakePart[1] and v[2] == previousSnakePart[2]) and
         (v[1] == nextSnakePart[1] and v[2] > nextSnakePart[2]) then
 
         spriteBodyPosition = snakeSpriteBody("up", "left")
 
-      elseif (v[1] == previousSnakePart[1] and v[2] < previousSnakePart[2]) and
+      elseif not isCorner and (v[1] == previousSnakePart[1] and v[2] < previousSnakePart[2]) and
         (v[1] > nextSnakePart[1] and v[2] == nextSnakePart[2]) then
 
         spriteBodyPosition = snakeSpriteBody("down", "left")
 
-      elseif (v[1] < previousSnakePart[1] and v[2] == previousSnakePart[2]) and
+      elseif not isCorner and (v[1] < previousSnakePart[1] and v[2] == previousSnakePart[2]) and
         (v[1] == nextSnakePart[1] and v[2] > nextSnakePart[2]) then
 
         spriteBodyPosition = snakeSpriteBody("up", "right")
 
-      elseif (v[1] < previousSnakePart[1] and v[2] == previousSnakePart[2]) and
+      elseif not isCorner and (v[1] < previousSnakePart[1] and v[2] == previousSnakePart[2]) and
         (v[1] == nextSnakePart[1] and v[2] < nextSnakePart[2]) then
 
         spriteBodyPosition = snakeSpriteBody("down", "right")
 
-      elseif (v[1] > previousSnakePart[1] and v[2] == previousSnakePart[2]) and
+      elseif not isCorner and (v[1] > previousSnakePart[1] and v[2] == previousSnakePart[2]) and
         (v[1] == nextSnakePart[1] and v[2] < nextSnakePart[2]) then
 
         spriteBodyPosition = snakeSpriteBody("down", "left")
