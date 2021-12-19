@@ -1,6 +1,8 @@
 #!/usr/bin/env lua
 
 function love.load()
+  math.randomseed(os.time())
+
   snakeSize = 43
   scoreBoardHeight = 70
   fullWidth = snakeSize * 10
